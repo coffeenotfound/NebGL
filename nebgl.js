@@ -62,6 +62,8 @@ var NebGL = {
 		}
 		return program;
 	},
+	
+	/** Creates and links a shader program from the given vertex and fragment shader code. */
 	createProgramFromCode(gl, vertcode, fragcode) {
 		// create shaders
 		var vert = createShaderFromCode(gl, gl.VERTEX_SHADER, vertcode);
@@ -71,6 +73,8 @@ var NebGL = {
 		var program = createProgramFromShaders(gl, vert, frag);
 		return program;
 	},
+	
+	/** Creates and links a shader program from vertex and fragment shader code from the script tags with the given ids. */
 	createProgramFromScripts(gl, vertscriptid, fragscriptid) {
 		// create shaders
 		var vert = createShaderFromScript(gl, gl.VERTEX_SHADER, vertscriptid);
