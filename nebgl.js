@@ -16,7 +16,7 @@ var NebGL = {
 	createGLForId: function(id) {
 		var canvas = document.getElementById(id);
 		
-		var gl = createGL(canvas);
+		var gl = this.createGL(canvas);
 		return gl;
 	},
 	
@@ -59,7 +59,7 @@ var NebGL = {
 		if(!scriptTag) throw ("shader creation failed: unknown script tag: #" + scriptid);
 		
 		// create shader
-		var shader = createShaderFromCode(gl, type, scriptTag.text);
+		var shader = this.createShaderFromCode(gl, type, scriptTag.text);
 		return shader;
 	},
 	
@@ -86,22 +86,22 @@ var NebGL = {
 	/** Creates and links a shader program from the given vertex and fragment shader code. */
 	createProgramFromCode: function(gl, vertcode, fragcode) {
 		// create shaders
-		var vert = createShaderFromCode(gl, gl.VERTEX_SHADER, vertcode);
-		var frag = createShaderFromCode(gl, gl.FRAGMENT_SHADER, fragcode);
+		var vert = this.createShaderFromCode(gl, gl.VERTEX_SHADER, vertcode);
+		var frag = this.createShaderFromCode(gl, gl.FRAGMENT_SHADER, fragcode);
 		
 		// create program
-		var program = createProgramFromShaders(gl, vert, frag);
+		var program = this.createProgramFromShaders(gl, vert, frag);
 		return program;
 	},
 	
 	/** Creates and links a shader program from vertex and fragment shader code from the script tags with the given ids. */
 	createProgramFromScripts: function(gl, vertscriptid, fragscriptid) {
 		// create shaders
-		var vert = createShaderFromScript(gl, gl.VERTEX_SHADER, vertscriptid);
-		var frag = createShaderFromScript(gl, gl.FRAGMENT_SHADER, fragscriptid);
+		var vert = this.createShaderFromScript(gl, gl.VERTEX_SHADER, vertscriptid);
+		var frag = this.createShaderFromScript(gl, gl.FRAGMENT_SHADER, fragscriptid);
 		
 		// create program
-		var program = createProgramFromShaders(gl, vert, frag);
+		var program = this.createProgramFromShaders(gl, vert, frag);
 		return program;
 	},
 };
