@@ -1,7 +1,7 @@
 var NebGL = {
 	
 	/** Creates a new WebGL context for the given canvas */
-	function createGL(canvas) {
+	createGL: function(canvas) {
 		// create context
 		var gl = canvas.getContext("webgl");
 		
@@ -10,7 +10,7 @@ var NebGL = {
 			throw "WebGL context creation failed: webgl may be unsupported";
 		}
 		return gl;
-	}
+	},
 	
 	/** Creates a new WebGL context for the canvas with the given element id */
 	createGLForId: function(id) {
