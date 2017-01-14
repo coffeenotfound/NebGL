@@ -12,6 +12,14 @@ var NebGL = {
 		return gl;
 	}
 	
+	/** Creates a new WebGL context for the canvas with the given element id */
+	createGLForId: function(id) {
+		var canvas = document.getElementById(id);
+		
+		var gl = createGL(canvas);
+		return gl;
+	},
+	
 	// ### shaders ###
 	
 	/** Creates and compiles a shader with the given type from the given glsl code. */
