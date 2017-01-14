@@ -1,7 +1,9 @@
 var NebGL = {
 	
 	/** Creates a new WebGL context for the given canvas */
-	createGL: function(canvas) {
+	createGL: function(canvas, config) {
+		config = config || {};
+		
 		// create context
 		var gl = canvas.getContext("webgl");
 		
@@ -13,10 +15,10 @@ var NebGL = {
 	},
 	
 	/** Creates a new WebGL context for the canvas with the given element id */
-	createGLForId: function(id) {
+	createGLForId: function(id, config) {
 		var canvas = document.getElementById(id);
 		
-		var gl = this.createGL(canvas);
+		var gl = this.createGL(canvas, config);
 		return gl;
 	},
 	
