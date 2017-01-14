@@ -4,6 +4,10 @@ var NebGL = {
 	createGL: function(canvas, config) {
 		config = config || {};
 		
+		// set canvas size
+		if(config.width) canvas.setAttribute("width", config.width);
+		if(config.height) canvas.setAttribute("height", config.height);
+		
 		// create context
 		var gl = canvas.getContext("webgl");
 		
