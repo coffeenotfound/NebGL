@@ -1,5 +1,17 @@
 var NebGL = {
 	
+	/** Creates a new WebGL context for the given canvas */
+	function createGL(canvas) {
+		// create context
+		var gl = canvas.getContext("webgl");
+		
+		// context creation failed
+		if(!gl) {
+			throw "WebGL context creation failed: webgl may be unsupported";
+		}
+		return gl;
+	}
+	
 	// ### shaders ###
 	
 	/** Creates and compiles a shader with the given type from the given glsl code. */
