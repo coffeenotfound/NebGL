@@ -36,7 +36,7 @@ var NebGL = {
 			gl.compileShader(shader);
 			
 			// check status
-			if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS) {
+			if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 				var infolog = gl.getShaderInfoLog(shader);
 				throw ("shader compile failed: " + infolog);
 			}
