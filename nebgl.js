@@ -1,5 +1,12 @@
 var NebGL = {
 	
+	/** Utils of the utils */
+	Utils = {
+		getWindowSize: function() {
+			return { x: window.innerWidth, y: window.innerHeight };
+		},
+	},
+	
 	/** Creates a new WebGL context for the given canvas */
 	createGL: function(canvas, config) {
 		config = config || {};
