@@ -1,7 +1,7 @@
 var NebGL = {
 	
 	/** Utils of the utils */
-	Utils = {
+	Utils: {
 		getWindowSize: function() {
 			return { x: window.innerWidth, y: window.innerHeight };
 		},
