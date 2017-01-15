@@ -26,6 +26,22 @@ var NebGL = {
 		return gl;
 	},
 	
+	// ### buffers ###
+	
+	createBuffer: function(gl) {
+		// create buffer
+		var buffer = gl.createBuffer();
+		return buffer;
+	},
+	uploadBuffer: function(gl, buffer, target, data, usage) {
+		// bind buffer
+		gl.bindBuffer(target, buffer);
+		
+		// upload
+		gl.bufferData(target, data, usage);
+		//gl.bufferData(target, new Float32Array(data), usage);
+	},
+	
 	// ### shaders ###
 	
 	/** Creates and compiles a shader with the given type from the given glsl code. */
