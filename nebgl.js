@@ -72,6 +72,94 @@ var NebGL = {
 	},
 	*/
 	
+	// ### framebuffer ###
+	
+	createFramebuffer: function(gl, config) {
+		config = config || {};
+		
+		// create framebuffer
+		var framebuffer = gl.createFramebuffer();
+		
+		var width = config.width;
+		var height = config.height;
+		
+		// set properties
+		framebuffer.width = width;
+		framebuffer.height = height;
+		
+		// create attachments
+		var attachments = config.attachments || [];
+		for(var i = 0; i < attachments.length; i++) {
+			var attach = attachments[i];
+			
+			// TODO: this has to do more checking what the attachment should actually be -> tex? renderbuffer? has to be created?
+			
+			var isDepth = attach.depth == true;
+			
+			if(isDepth) {
+				this.framebufferRenderbuffer(attach);
+			}
+			else {
+				this.framebufferTexture(attach);
+			}
+		}
+		return framebuffer;
+	},
+	
+	framebufferTexture: function(gl, framebuffer, config) {
+		config = config || {};
+		
+		var texture = config.tex;
+		
+		// create texture
+		if(!texture) {
+			texture = gl.createTexture();
+			
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+			gl.texImage2D(gl.TEXTURE_2D, 0, // level
+				(config.internalformat || gl.RGBA), // internalformat (RGBA8 is only accepted in webgl2 because reasons)
+				(config.width || framebuffer.width), // width
+				(config.height || framebuffer.height), // height
+				0, // border
+				(config.format || gl.RGBA), // format
+				(config.type || gl.UNSIGNED_BYTE), // type
+				null); // data
+		}
+		
+		// bing framebuffer
+		gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+		
+		// attach texture
+		gl.framebufferTexture2D(gl.FRAMEBUFFER, config.point, gl.TEXTURE_2D, texture, 0);
+		
+		return texture;
+	},
+	
+	framebufferRenderbuffer: function(gl, framebuffer, config) {
+		config = config || {};
+		
+		var renderbuffer = config.renderbuffer;
+		
+		// create renderbuffer
+		if(!renderbuffer) {
+			renderbuffer = gl.createRenderbuffer();
+			
+			gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+			gl.renderbufferStorage(gl.RENDERBUFFER,
+				(config.internalformat || gl.DEPTH_COMPONENT16), // internalformat
+				(config.width || framebuffer.width), // width
+				(config.height || framebuffer.height)); // height
+		}
+		
+		// bing framebuffer
+		gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+		
+		// attach renderbuffer
+		gl.framebufferRenderbuffer(gl.FRAMEBUFFER, config.point, gl.RENDERBUFFER, renderbuffer);
+		
+		return renderbuffer;
+	},
+	
 	// ### shaders ###
 	
 	/** Creates and compiles a shader with the given type from the given glsl code. */
