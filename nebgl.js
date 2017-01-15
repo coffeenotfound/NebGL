@@ -47,6 +47,10 @@ var NebGL = {
 		// upload
 		gl.bufferData(target, data, usage);
 		//gl.bufferData(target, new Float32Array(data), usage);
+		
+		// add info property
+		var info = { target: target, length: data.length };
+		buffer.info = info;
 	},
 	
 	// ### vertexarray ###
