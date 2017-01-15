@@ -42,6 +42,36 @@ var NebGL = {
 		//gl.bufferData(target, new Float32Array(data), usage);
 	},
 	
+	// ### vertexarray ###
+	
+	/*
+	createVertexArray: function(gl, vertexattribs) {
+		// create the vertexarray
+		var vertexarray = gl.createVertexArray();
+		
+		// bind
+		gl.bindVertexArray(vertexarray);
+		
+		// set vertexattributes
+		for(var i = 0; i < vertexattribs.length; i++) {
+			var attrib = vertexattribs[i];
+			
+			// bind buffer
+			gl.bindBuffer(gl.VERTEX_ARRAY, attrib.buffer);
+			
+			// bind vertexpointer
+			var attribIndex = attrib.index || i;
+			gl.enableVertexAttribArray(attribIndex);
+			gl.vertexAttribPointer(attribIndex, (attrib.comps || 3), (attrib.type || gl.FLOAT), false, (attrib.stride || 0), (attrib.offset || 0));
+		}
+		
+		// unbind
+		gl.bindVertexArray(0);
+		
+		return vertexarray;
+	},
+	*/
+	
 	// ### shaders ###
 	
 	/** Creates and compiles a shader with the given type from the given glsl code. */
