@@ -42,6 +42,12 @@ var NebGL = {
 		if(!gl) {
 			throw "WebGL context creation failed: webgl may be unsupported";
 		}
+		
+		// query extensions
+		var supportedExts = gl.getSupportedExtensions();
+		//gl.supportedExtensions = supportedExts;
+		console.log(supportedExts);
+		
 		return gl;
 	},
 	
@@ -51,6 +57,34 @@ var NebGL = {
 		
 		var gl = this.createGL(canvas, config);
 		return gl;
+	},
+	
+	// ### extensions ###
+	
+	supports: function(gl, ext) {
+		return gl.getSupportedExtensions()[ext] == true;
+	},
+	
+	createExtension: function(gl, name) {
+		// create extension
+		var ext = gl.getExtension(name);
+		
+		if(ext) {
+			// prettyfy name
+			var prettyName = this._prettifyExtensionName(name);
+			console.log(prettyName);
+			
+			// set property
+			ext.prettyName = prettyName;
+			gl[prettyName] = ext;
+		}
+		return ext;
+	},
+	
+	_prettifyExtensionName: function(name) {
+		return name.replace(new RegExp("_(.)", "g"), function(match, p1) {
+			return p1.toUpperCase();
+		});
 	},
 	
 	// ### buffers ###
