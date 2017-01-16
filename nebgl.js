@@ -35,8 +35,13 @@ var NebGL = {
 		if(config.width) canvas.setAttribute("width", config.width);
 		if(config.height) canvas.setAttribute("height", config.height);
 		
-		// create context
-		var gl = canvas.getContext("webgl", config);
+		// try create webgl 2 context
+		gl = canvas.getContext("webgl2", config) || canvas.getContext("experimental-webgl2", config);
+		
+		// create webgl1 context
+		if(!gl) {
+			gl = canvas.getContext("webgl", config);
+		}
 		
 		// context creation failed
 		if(!gl) {
