@@ -27,6 +27,10 @@ var NebGL = {
 	createGL: function(canvas, config) {
 		config = config || {};
 		
+		// default properties
+		config.width = config.width || 640;
+		config.height = config.height || 480;
+		
 		// set canvas size
 		if(config.width) canvas.setAttribute("width", config.width);
 		if(config.height) canvas.setAttribute("height", config.height);
