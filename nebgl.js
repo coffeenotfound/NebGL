@@ -1,3 +1,18 @@
+// lazy getter test
+// context extension properties could be lazy getters to allow automatic creation of required extensions
+var lazygetter = {
+	active: (function() {
+		console.log("evaluated active!");
+		return 'active value';
+	})(),
+	
+	get lazy() {
+		delete this.lazy;
+		console.log("evaluated lazy!")
+		return this.lazy = 'lazy value';
+	},
+};
+
 var NebGL = {
 	
 	/** Utils of the utils */
