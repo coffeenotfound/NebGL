@@ -17,6 +17,7 @@ var NebGL = {
 	
 	/** Utils of the utils */
 	Utils: {
+		/** returns the width and height of the browser window's inner viewport */
 		getWindowSize: function() {
 			return { x: window.innerWidth, y: window.innerHeight };
 		},
