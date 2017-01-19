@@ -89,7 +89,7 @@ var NebGL = {
 			if(canvas) {
 				_requestFullscreen(canvas);
 			}
-			return (canvas && (this.getFullscreenElement() == canvas));
+			return (canvas !== null && (this.getFullscreenElement() == canvas));
 		};
 	})(),
 	
