@@ -34,6 +34,8 @@ var NebGL = {
 		// set canvas size
 		if(config.width) canvas.setAttribute("width", config.width);
 		if(config.height) canvas.setAttribute("height", config.height);
+		canvas.style.width = config.width + "px";
+		canvas.style.height = config.height + "px";
 		
 		// try create webgl 2 context
 		gl = canvas.getContext("webgl2", config) || canvas.getContext("experimental-webgl2", config);
