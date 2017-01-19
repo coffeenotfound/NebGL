@@ -171,7 +171,18 @@ var NebGL = {
 				
 				// update gl viewport
 				ctx.viewport(0, 0, newSize.x, newSize.y);
+				
+				// call resize handler
+				if(ctx._resizehandler) {
+					ctx._resizehandler(newSize.x, newSize.y);
+				}
 			}
+		}
+	},
+	
+	setResizeHandler: function(context, handler) {
+		if(context) {
+			context._resizehandler = handler;
 		}
 	},
 	
