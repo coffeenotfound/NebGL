@@ -76,6 +76,35 @@ var NebGL = {
 		return gl;
 	},
 	
+	makeFullscreen: function(context) {
+		var canvas = gl.canvas;
+		
+		//canvas.requestFullscreen();
+		var a = canvas.webkitRequestFullscreen();
+	},
+	
+	exitFullscreen: function(context) {
+		if(document.webkitFullscreenElement == context.canvas) {
+			document.webkitExitFullscreen();
+		}
+		
+		/*
+		if(document.fullscreenElement == context.canvas) {
+			document.exitFullscreen();
+		}
+		*/
+	},
+	
+	isFullscreen: function(context) {
+		//return (document.fullscreenElement == context.canvas);
+		return (document.webkitFullscreenElement == context.canvas);
+	},
+	
+	isFullscreenAllowed: function(context) {
+		//return document.fullscreenEnabled;
+		return document.webkitFullscreenEnabled;
+	},
+	
 	// TODO: REDO
 	_fullwindowContexts: [],
 	_registerFullwindow: function(context) {
