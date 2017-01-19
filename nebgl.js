@@ -76,34 +76,69 @@ var NebGL = {
 		return gl;
 	},
 	
-	makeFullscreen: function(context) {
-		var canvas = gl.canvas;
+	makeFullscreen: (function() {
+		var _requestFullscreen = (function() {
+			if(Element.prototype.requestFullscreen) return function(elem) { return elem.requestFullscreen(); };
+			else if(Element.prototype.webkitRequestFullscreen) return function(elem) { return elem.webkitRequestFullscreen(); };
+			else if(Element.prototype.mozRequestFullScreen) return function(elem) { return elem.mozRequestFullScreen(); };
+			else if(Element.prototype.msRequestFullscreen) return function(elem) { return elem.msRequestFullscreen(); };
+		})();
 		
-		//canvas.requestFullscreen();
-		var a = canvas.webkitRequestFullscreen();
-	},
+		return function(context) {
+			var canvas = context ? context.canvas : null;
+			if(canvas) {
+				_requestFullscreen(canvas);
+			}
+			return (canvas && (this.getFullscreenElement() == canvas));
+		};
+	})(),
 	
-	exitFullscreen: function(context) {
-		if(document.webkitFullscreenElement == context.canvas) {
-			document.webkitExitFullscreen();
-		}
+	exitFullscreen: (function() {
+		var _exitFullscreen = (function() {
+			if(Document.prototype.exitFullscreen) return document.exitFullscreen();
+			else if(Document.prototype.webkitExitFullscreen) return document.webkitExitFullscreen();
+			else if(Document.prototype.mozCancelFullScreen) return document.mozCancelFullScreen();
+			else if(Document.prototype.msExitFullscreen) return document.msExitFullscreen();
+		})();
 		
-		/*
-		if(document.fullscreenElement == context.canvas) {
-			document.exitFullscreen();
-		}
-		*/
-	},
+		return function(context) {
+			if(context && context.canvas && this.getFullscreenElement() == context.canvas) {
+				_exitFullscreen();
+			}
+		};
+	})(),
 	
-	isFullscreen: function(context) {
-		//return (document.fullscreenElement == context.canvas);
-		return (document.webkitFullscreenElement == context.canvas);
-	},
+	isFullscreen: (function() {
+		return function(context) {
+			return (context && context.canvas && this.getFullscreenElement() == context.canvas);
+		};
+	})(),
 	
-	isFullscreenAllowed: function(context) {
-		//return document.fullscreenEnabled;
-		return document.webkitFullscreenEnabled;
-	},
+	getFullscreenElement: (function() {
+		var _fullscreenElement = (function() {
+			if(document.fullscreenElement !== undefined) return function(){ return document.fullscreenElement; }
+			else if(document.webkitFullscreenElement !== undefined) return function(){ return document.webkitFullscreenElement; }
+			else if(document.mozFullScreenElement !== undefined) return function(){ return document.mozFullScreenElement; }
+			else if(document.msFullscreenElement !== undefined) return function(){ return document.msFullscreenElement; }
+		})();
+		
+		return function() {
+			return _fullscreenElement();
+		};
+	})(),
+	
+	isFullscreenAllowed: (function() {
+		var _fullscreenEnabled = (function() {
+			if(document.fullscreenEnabled !== undefined) return function(){ return document.fullscreenEnabled; };
+			else if(document.webkitFullscreenEnabled !== undefined) return function(){ return document.webkitFullscreenEnabled; };
+			else if(document.mozFullScreenEnabled !== undefined) return function(){ return document.mozFullScreenEnabled; };
+			else if(document.msFullscreenEnabled !== undefined) return function(){ return document.msFullscreenEnabled; };
+		})();
+		
+		return function() {
+			return _fullscreenEnabled();
+		};
+	})(),
 	
 	// TODO: REDO
 	_fullwindowContexts: [],
