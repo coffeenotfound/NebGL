@@ -57,7 +57,7 @@ var NebGL = {
 		
 		// register fullwindow context
 		if(config.fullwindow) {
-			this._registerFullwindow(gl);
+			this._registerFullwindowContext(gl);
 		}
 		
 		// query extensions
@@ -140,14 +140,18 @@ var NebGL = {
 		};
 	})(),
 	
-	// TODO: REDO
 	_fullwindowContexts: [],
-	_registerFullwindow: function(context) {
-		NebGL._fullwindowContexts.push(context);
+	_registerFullwindowContext: function(context) {
+		this._fullwindowContexts.push(context);
+	},
+	_deregisterFullwindowContext: function(contxt) {
+		var index = this._fullwindowContexts.indexOf(contxt);
+		if(index > -1) {
+			this._fullwindowContexts.splice(index, 1);
+		}
 	},
 	
-	// TODO: REDO
-	_onWindowResize: function() {
+	_processWindowResize: function() {
 		if(NebGL._fullwindowContexts.length > 0) {
 			var newSize = NebGL.Utils.getWindowSize();
 			
@@ -424,4 +428,43 @@ var NebGL = {
 };
 
 // register resize callback
-window.onresize = NebGL._onWindowResize;
+(function() {
+	var pending = false;
+	
+	var trigger = function() {
+		if(pending) return;
+		pending = true;
+		
+		if(window.requestAnimationFrame) {
+			window.requestAnimationFrame(process);
+		}
+		else {
+			setTimeout(process, 16);
+		}
+	};
+	var process = function() {
+		pending = false;
+		
+		// process resize
+		NebGL._processWindowResize();
+	};
+	
+	window.addEventListener('resize', trigger);
+})();
+
+// Array.indexOf polyfill
+Array.prototype.indexOf || (Array.prototype.indexOf = function(d, e) {
+    var a;
+    if (null == this) throw new TypeError('"this" is null or not defined');
+    var c = Object(this),
+        b = c.length >>> 0;
+    if (0 === b) return -1;
+    a = +e || 0;
+    Infinity === Math.abs(a) && (a = 0);
+    if (a >= b) return -1;
+    for (a = Math.max(0 <= a ? a : b - Math.abs(a), 0); a < b;) {
+        if (a in c && c[a] === d) return a;
+        a++
+    }
+    return -1;
+});
