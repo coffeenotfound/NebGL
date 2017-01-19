@@ -32,6 +32,11 @@ var NebGL = {
 		config.height = config.height || 480;
 		
 		// set canvas size
+		if(config.fullwindow) {
+			var windowDims = this.Utils.getWindowSize();
+			config.width = windowDims.x;
+			config.height = windowDims.y;
+		}
 		if(config.width) canvas.setAttribute("width", config.width);
 		if(config.height) canvas.setAttribute("height", config.height);
 		canvas.style.width = config.width + "px";
@@ -50,6 +55,11 @@ var NebGL = {
 			throw "WebGL context creation failed: webgl may be unsupported";
 		}
 		
+		// register fullwindow context
+		if(config.fullwindow) {
+			this._registerFullwindow(gl);
+		}
+		
 		// query extensions
 		var supportedExts = gl.getSupportedExtensions();
 		//gl.supportedExtensions = supportedExts;
@@ -64,6 +74,37 @@ var NebGL = {
 		
 		var gl = this.createGL(canvas, config);
 		return gl;
+	},
+	
+	// TODO: REDO
+	_fullwindowContexts: [],
+	_registerFullwindow: function(context) {
+		NebGL._fullwindowContexts.push(context);
+	},
+	
+	// TODO: REDO
+	_onWindowResize: function() {
+		if(NebGL._fullwindowContexts.length > 0) {
+			var newSize = NebGL.Utils.getWindowSize();
+			
+			// update contexts
+			for(var i = 0; i < NebGL._fullwindowContexts.length; i++) {
+				var ctx = NebGL._fullwindowContexts[i];
+				
+				var canvas = ctx.canvas;
+				
+				// set canvas size
+				if(canvas) {
+					canvas.setAttribute("width", newSize.x);
+					canvas.setAttribute("height", newSize.y);
+					canvas.style.width = newSize.x + "px";
+					canvas.style.height = newSize.y + "px";
+				}
+				
+				// update gl viewport
+				ctx.viewport(0, 0, newSize.x, newSize.y);
+			}
+		}
 	},
 	
 	// ### extensions ###
@@ -317,3 +358,6 @@ var NebGL = {
 		return program;
 	},
 };
+
+// register resize callback
+window.onresize = NebGL._onWindowResize;
