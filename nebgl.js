@@ -179,10 +179,21 @@ var NebGL = {
 		}
 	},
 	
-	setResizeHandler: function(context, handler) {
-		if(context) {
-			context._resizehandler = handler;
+	registerResizeHandler: function(context, handler) {
+		if(context && handler) {
+			context._resizehandlers.push(handler);
 		}
+	},
+	
+	deregisterResizeHandler: function(context, handler) {
+		if(context && handler) {
+			var index = context._resizehandlers.indexOf(handler);
+			if(index > -1) {
+				context._resizehandlers.splice(index, 1);
+				return true;
+			}
+		}
+		return false;
 	},
 	
 	// ### extensions ###
