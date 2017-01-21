@@ -151,29 +151,35 @@ var NebGL = {
 	})(),
 	
 	_processWindowResize: function() {
-		if(NebGL._fullwindowContexts.length > 0) {
+		if(NebGL._contexts.length > 0) {
 			var newSize = NebGL.Utils.getWindowSize();
 			
-			// update contexts
-			for(var i = 0; i < NebGL._fullwindowContexts.length; i++) {
-				var ctx = NebGL._fullwindowContexts[i];
-				
+			// call resize callbacks (and process fullwindow contexts)
+			for(var i = 0; i < NebGL._contexts.length; i++) {
+				var ctx = NebGL._contexts[i];
 				var canvas = ctx.canvas;
 				
-				// set canvas size
-				if(canvas) {
-					canvas.setAttribute("width", newSize.x);
-					canvas.setAttribute("height", newSize.y);
-					canvas.style.width = newSize.x + "px";
-					canvas.style.height = newSize.y + "px";
+				if(ctx._isfullwindow === true) {
+					// set canvas size
+					if(canvas) {
+						canvas.setAttribute("width", newSize.x);
+						canvas.setAttribute("height", newSize.y);
+						canvas.style.width = newSize.x + "px";
+						canvas.style.height = newSize.y + "px";
+					}
+					
+					// update gl viewport
+					ctx.viewport(0, 0, newSize.x, newSize.y);
 				}
 				
-				// update gl viewport
-				ctx.viewport(0, 0, newSize.x, newSize.y);
-				
-				// call resize handler
-				if(ctx._resizehandler) {
-					ctx._resizehandler(newSize.x, newSize.y);
+				// call resize handlers
+				if(ctx._resizehandlers) {
+					for(var j = 0; j < ctx._resizehandlers.length; j++) {
+						var handler = ctx._resizehandlers[j];
+						
+						// actually call handler
+						handler(ctx, newSize.x, newSize.y);
+					}
 				}
 			}
 		}
