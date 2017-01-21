@@ -23,6 +23,18 @@ var NebGL = {
 		},
 	},
 	
+	_contexts: [],
+	_registerContext: function(context) {
+		if(!context) return;
+		this._contexts.push(context);
+	},
+	_deregisterContext: function(context) {
+		var index = this._contexts.indexOf(context);
+		if(index > -1) {
+			this._contexts.splice(index, 1);
+		}
+	},
+	
 	/** Creates a new WebGL context for the given canvas */
 	createGL: function(canvas, config) {
 		config = config || {};
@@ -55,10 +67,12 @@ var NebGL = {
 			throw "WebGL context creation failed: webgl may be unsupported";
 		}
 		
-		// register fullwindow context
-		if(config.fullwindow) {
-			this._registerFullwindowContext(gl);
-		}
+		// register context
+		this._registerContext(gl);
+		
+		// init state
+		gl._isfullwindow = config.fullwindow === true;
+		gl._resizehandlers = [];
 		
 		// query extensions
 		var supportedExts = gl.getSupportedExtensions();
@@ -140,50 +154,56 @@ var NebGL = {
 		};
 	})(),
 	
-	_fullwindowContexts: [],
-	_registerFullwindowContext: function(context) {
-		this._fullwindowContexts.push(context);
-	},
-	_deregisterFullwindowContext: function(contxt) {
-		var index = this._fullwindowContexts.indexOf(contxt);
-		if(index > -1) {
-			this._fullwindowContexts.splice(index, 1);
-		}
-	},
-	
 	_processWindowResize: function() {
-		if(NebGL._fullwindowContexts.length > 0) {
+		if(NebGL._contexts.length > 0) {
 			var newSize = NebGL.Utils.getWindowSize();
 			
-			// update contexts
-			for(var i = 0; i < NebGL._fullwindowContexts.length; i++) {
-				var ctx = NebGL._fullwindowContexts[i];
-				
+			// call resize callbacks (and process fullwindow contexts)
+			for(var i = 0; i < NebGL._contexts.length; i++) {
+				var ctx = NebGL._contexts[i];
 				var canvas = ctx.canvas;
 				
-				// set canvas size
-				if(canvas) {
-					canvas.setAttribute("width", newSize.x);
-					canvas.setAttribute("height", newSize.y);
-					canvas.style.width = newSize.x + "px";
-					canvas.style.height = newSize.y + "px";
+				if(ctx._isfullwindow === true) {
+					// set canvas size
+					if(canvas) {
+						canvas.setAttribute("width", newSize.x);
+						canvas.setAttribute("height", newSize.y);
+						canvas.style.width = newSize.x + "px";
+						canvas.style.height = newSize.y + "px";
+					}
+					
+					// update gl viewport
+					ctx.viewport(0, 0, newSize.x, newSize.y);
 				}
 				
-				// update gl viewport
-				ctx.viewport(0, 0, newSize.x, newSize.y);
-				
-				// call resize handler
-				if(ctx._resizehandler) {
-					ctx._resizehandler(newSize.x, newSize.y);
+				// call resize handlers
+				if(ctx._resizehandlers) {
+					for(var j = 0; j < ctx._resizehandlers.length; j++) {
+						var handler = ctx._resizehandlers[j];
+						
+						// actually call handler
+						handler(ctx, newSize.x, newSize.y);
+					}
 				}
 			}
 		}
 	},
 	
-	setResizeHandler: function(context, handler) {
-		if(context) {
-			context._resizehandler = handler;
+	registerResizeHandler: function(context, handler) {
+		if(context && handler) {
+			context._resizehandlers.push(handler);
 		}
+	},
+	
+	deregisterResizeHandler: function(context, handler) {
+		if(context && handler) {
+			var index = context._resizehandlers.indexOf(handler);
+			if(index > -1) {
+				context._resizehandlers.splice(index, 1);
+				return true;
+			}
+		}
+		return false;
 	},
 	
 	// ### extensions ###
