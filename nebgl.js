@@ -23,6 +23,18 @@ var NebGL = {
 		},
 	},
 	
+	_contexts: [],
+	_registerContext: function(context) {
+		if(!context) return;
+		this._contexts.push(context);
+	},
+	_deregisterContext: function(context) {
+		var index = this._contexts.indexOf(context);
+		if(index > -1) {
+			this._contexts.splice(index, 1);
+		}
+	},
+	
 	/** Creates a new WebGL context for the given canvas */
 	createGL: function(canvas, config) {
 		config = config || {};
@@ -55,10 +67,8 @@ var NebGL = {
 			throw "WebGL context creation failed: webgl may be unsupported";
 		}
 		
-		// register fullwindow context
-		if(config.fullwindow) {
-			this._registerFullwindowContext(gl);
-		}
+		// register context
+		this._registerContext(gl);
 		
 		// query extensions
 		var supportedExts = gl.getSupportedExtensions();
@@ -139,17 +149,6 @@ var NebGL = {
 			return _fullscreenEnabled();
 		};
 	})(),
-	
-	_fullwindowContexts: [],
-	_registerFullwindowContext: function(context) {
-		this._fullwindowContexts.push(context);
-	},
-	_deregisterFullwindowContext: function(contxt) {
-		var index = this._fullwindowContexts.indexOf(contxt);
-		if(index > -1) {
-			this._fullwindowContexts.splice(index, 1);
-		}
-	},
 	
 	_processWindowResize: function() {
 		if(NebGL._fullwindowContexts.length > 0) {
