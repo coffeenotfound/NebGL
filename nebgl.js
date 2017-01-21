@@ -72,6 +72,7 @@ var NebGL = {
 		
 		// init state
 		gl._isfullwindow = config.fullwindow === true;
+		gl._resizehandlers = [];
 		
 		// query extensions
 		var supportedExts = gl.getSupportedExtensions();
