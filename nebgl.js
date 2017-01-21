@@ -70,6 +70,9 @@ var NebGL = {
 		// register context
 		this._registerContext(gl);
 		
+		// init state
+		gl._isfullwindow = config.fullwindow === true;
+		
 		// query extensions
 		var supportedExts = gl.getSupportedExtensions();
 		//gl.supportedExtensions = supportedExts;
